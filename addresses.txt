@@ -15,39 +15,71 @@ Most
 Opava
 Frydek Mistek
 Karvina
-Teplice
-Decin
-Karlovy Vary
-Jihlava
-Chomutov
-Prerov
-Mlada Boleslav
-Ceska Lipa
-Trebic
-Trinec
-Znojmo
-Nový Jicin
-Kroměříž
-Prostějov
-Trutnov
-Pribram
-Orlova
-Ustni Orilce
-Hodonin
-Pisek
-Zdar nad Sazavou
-Vsetin
-Chrudim
-Sumpert
-Zatec
-Blansko
-Jablonec nad Nisou
-Uherske Hradiste
-Hodonin
-Melnik
-Jindrichuv Hradec
-Litvinovice
+Prague
 Brno
-Bratislava
-Brodek
-Hranice
+Ostrava
+Plzen
+Liberec
+Olomouc
+Ceske Budejovice
+Usti nad Label
+Hradec Kralove
+Pardubice
+Zlin
+Havirov
+Kladno
+Most
+Opava
+Frydek Mistek
+Karvina
+Prague
+Brno
+Ostrava
+Plzen
+Liberec
+Olomouc
+Ceske Budejovice
+Usti nad Label
+Hradec Kralove
+Pardubice
+Zlin
+Havirov
+Kladno
+Most
+Opava
+Frydek Mistek
+Karvina
+Prague
+Brno
+Ostrava
+Plzen
+Liberec
+Olomouc
+Ceske Budejovice
+Usti nad Label
+Hradec Kralove
+Pardubice
+Zlin
+Havirov
+Kladno
+Most
+Opava
+Frydek Mistek
+Karvina
+Prague
+Brno
+Ostrava
+Plzen
+Liberec
+Olomouc
+Ceske Budejovice
+Usti nad Label
+Hradec Kralove
+Pardubice
+Zlin
+Havirov
+Kladno
+Most
+Opava
+Frydek Mistek
+Karvina

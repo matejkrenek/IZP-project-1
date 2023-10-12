@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include "logger/logger.h"
+#include <time.h>
 
 #define MAX_INPUT_LENGTH 100
 #define MAX_ADDRESS_LENGTH 100
@@ -27,44 +27,61 @@ typedef enum
 
 char *trim(char *text);
 char *lowercase(char *text);
+char *uppercase(char *text);
 char *argcat(char *input, char *args[], int argc);
+char *bsort(char *input);
 AddressResult eval_address(char *input, char *address);
 
 int main(int argc, char *argv[])
 {
-    logger_init(LOG_DEBUG);
-
     char input[MAX_INPUT_LENGTH] = "";
     char address[MAX_ADDRESS_LENGTH];
+    char address_found[MAX_ADDRESS_LENGTH];
     char hint[MAX_HINT_LENGTH] = "";
-    char *result;
 
     // Concatante passed arguments and convert the input to lowercase
-    trim(lowercase(argcat(input, argv, argc)));
+    trim(uppercase(argcat(input, argv, argc)));
 
     // Loop through passed addreses
     while (fgets(address, sizeof(address), stdin))
     {
-        switch (eval_address(input, trim(lowercase(address))))
+        char hint_temp[2];
+        trim(uppercase(address));
+
+        switch (eval_address(input, address))
         {
         case FOUND:
-            LOG_DEBUG("address: %s\t", address);
-            LOG_INFO("result: %s\n", "found");
-
+            strcpy(address_found, address);
             break;
         case PREFIX:
+            hint_temp[0] = address[strlen(input)];
+            hint_temp[1] = '\0';
 
+            // Add letter to hint only of it does not alredy exists in the hint
+            if (!strchr(hint, hint_temp[0]))
+            {
+                strcat(hint, hint_temp);
+            }
             break;
 
         default:
             break;
         }
     }
+    if (strlen(address_found))
+    {
+        printf("Found: %s\n", address_found);
+    }
 
-    LOG_DEBUG("address: %s\t", address);
-    LOG_INFO("hint: %s\n", "hint");
+    if (strlen(hint))
+    {
+        printf("ENABLED: %s\n", bsort(hint));
+    }
 
-    printf("Input: %s\n", input);
+    if (!strlen(hint) && !strlen(address_found))
+    {
+        printf("NOT FOUND\n");
+    }
 
     return 0;
 }
@@ -79,6 +96,21 @@ char *lowercase(char *text)
     for (int i = 0; i < text[i]; i++)
     {
         text[i] = tolower(text[i]);
+    }
+
+    return text;
+}
+
+/**
+ * @brief Converts passed string to uppercase
+ * @param text String to be converted
+ * @return Uppercased string
+ */
+char *uppercase(char *text)
+{
+    for (int i = 0; i < text[i]; i++)
+    {
+        text[i] = toupper(text[i]);
     }
 
     return text;
@@ -107,7 +139,12 @@ char *argcat(char *input, char *args[], int argc)
     return input;
 }
 
-// Function to trim leading whitespace from a string
+/**
+ * @brief Trim all leading whitespaces and trailing spaces
+ * @param text String to be
+ * @return Trimed text
+ *
+ */
 char *trim(char *text)
 {
     int i = 0;
@@ -126,6 +163,27 @@ char *trim(char *text)
     }
 
     text[len2] = '\0';
+
+    return text;
+}
+
+char *bsort(char *text)
+{
+    int length = strlen(text);
+    char temp;
+
+    for (int i = 0; i < length - 1; i++)
+    {
+        for (int j = 0; j < length - i - 1; j++)
+        {
+            if (text[j] > text[j + 1])
+            {
+                temp = text[j];
+                text[j] = text[j + 1];
+                text[j + 1] = temp;
+            }
+        }
+    }
 
     return text;
 }
