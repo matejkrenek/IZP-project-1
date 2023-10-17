@@ -3,7 +3,7 @@
  * @file main.c
  * @author Matěj Křenek <xkrenem00@stud.fit.vutbr.cz>
  * @brief
- * @date 2023-10-11
+ * @date 2023-10-14
  *
  * @copyright Copyright (c) 2023
  ***********************************************************************************
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include <time.h>
+#include <unistd.h>
 
 #define MAX_INPUT_LENGTH 100
 #define MAX_ADDRESS_LENGTH 100
@@ -29,6 +29,7 @@ char *trim(char *text);
 char *lowercase(char *text);
 char *uppercase(char *text);
 char *argcat(char *input, char *args[], int argc);
+char *replaceDiacritics(char *input);
 char *bsort(char *input);
 AddressResult eval_address(char *input, char *address);
 
@@ -40,13 +41,20 @@ int main(int argc, char *argv[])
     char hint[MAX_HINT_LENGTH] = "";
 
     // Concatante passed arguments and convert the input to lowercase
-    trim(uppercase(argcat(input, argv, argc)));
+    replaceDiacritics(trim(uppercase(argcat(input, argv, argc))));
+
+    // Check if any addresses have been passed to program
+    if (isatty(STDIN_FILENO))
+    {
+        printf("Addresses havent been passed on input.\n");
+        return 1;
+    }
 
     // Loop through passed addreses
     while (fgets(address, sizeof(address), stdin))
     {
         char hint_temp[2];
-        trim(uppercase(address));
+        replaceDiacritics(trim(uppercase(address)));
 
         switch (eval_address(input, address))
         {
@@ -68,17 +76,17 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    // Inform use about address search result
     if (strlen(address_found))
     {
         printf("Found: %s\n", address_found);
     }
-
-    if (strlen(hint))
+    else if (strlen(hint))
     {
         printf("ENABLED: %s\n", bsort(hint));
     }
-
-    if (!strlen(hint) && !strlen(address_found))
+    else
     {
         printf("NOT FOUND\n");
     }
@@ -186,6 +194,17 @@ char *bsort(char *text)
     }
 
     return text;
+}
+
+/**
+ * @brief Replaces diacritics characters with regular ASCII non-diactitics characters
+ * @param input Variable to search address
+ * @return Evaluated address result
+ */
+char *replaceDiacritics(char *input)
+{
+
+    return input;
 }
 
 /**
