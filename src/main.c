@@ -3,7 +3,7 @@
  * @file main.c
  * @author Matěj Křenek <xkrenem00@stud.fit.vutbr.cz>
  * @brief
- * @date 2023-10-14
+ * @date 2023-10-28
  *
  * @copyright Copyright (c) 2023
  ***********************************************************************************
@@ -14,22 +14,19 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAX_INPUT_LENGTH 100
-#define MAX_ADDRESS_LENGTH 100
+#define MAX_INPUT_LENGTH 101
+#define MAX_ADDRESS_LENGTH 101
 #define MAX_HINT_LENGTH 128 // maximum number of chars in 7bit ASCII table
 
 typedef enum
 {
-    FOUND,
-    NOT_FOUND,
-    PREFIX
+    FOUND,     // Search text fully corresponds to address
+    NOT_FOUND, // Search text doesnt corresponds to address at all
+    PREFIX     // Search text is prefix of address
 } AddressResult;
 
-char *trim(char *text);
-char *lowercase(char *text);
 char *uppercase(char *text);
 char *argcat(char *input, char *args[], int argc);
-char *replaceDiacritics(char *input);
 char *bsort(char *input);
 AddressResult eval_address(char *input, char *address);
 
@@ -38,10 +35,11 @@ int main(int argc, char *argv[])
     char input[MAX_INPUT_LENGTH] = "";
     char address[MAX_ADDRESS_LENGTH];
     char address_found[MAX_ADDRESS_LENGTH];
+    int address_prefix_count = 0;
     char hint[MAX_HINT_LENGTH] = "";
 
     // Concatante passed arguments and convert the input to lowercase
-    replaceDiacritics(trim(uppercase(argcat(input, argv, argc))));
+    uppercase(argcat(input, argv, argc));
 
     // Check if any addresses have been passed to program
     if (isatty(STDIN_FILENO))
@@ -54,7 +52,9 @@ int main(int argc, char *argv[])
     while (fgets(address, sizeof(address), stdin))
     {
         char hint_temp[2];
-        replaceDiacritics(trim(uppercase(address)));
+
+        // Format address row
+        uppercase(address);
 
         switch (eval_address(input, address))
         {
@@ -70,6 +70,18 @@ int main(int argc, char *argv[])
             {
                 strcat(hint, hint_temp);
             }
+
+            // If first of address prefix add it as found address else set found address to empty
+            if (address_prefix_count <= 0)
+            {
+                strcpy(address_found, address);
+            }
+            else
+            {
+                strcpy(address_found, "");
+            }
+
+            address_prefix_count++;
             break;
 
         default:
@@ -77,36 +89,21 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Inform use about address search result
+    // Inform user about address search result
     if (strlen(address_found))
     {
         printf("Found: %s\n", address_found);
     }
     else if (strlen(hint))
     {
-        printf("ENABLED: %s\n", bsort(hint));
+        printf("Enable: %s\n", bsort(hint));
     }
     else
     {
-        printf("NOT FOUND\n");
+        printf("Not found\n");
     }
 
     return 0;
-}
-
-/**
- * @brief Converts passed string to lowercase
- * @param text String to be converted
- * @return Lowercased string
- */
-char *lowercase(char *text)
-{
-    for (int i = 0; i < text[i]; i++)
-    {
-        text[i] = tolower(text[i]);
-    }
-
-    return text;
 }
 
 /**
@@ -116,7 +113,7 @@ char *lowercase(char *text)
  */
 char *uppercase(char *text)
 {
-    for (int i = 0; i < text[i]; i++)
+    for (int i = 0; i < (int)strlen(text); i++)
     {
         text[i] = toupper(text[i]);
     }
@@ -147,34 +144,6 @@ char *argcat(char *input, char *args[], int argc)
     return input;
 }
 
-/**
- * @brief Trim all leading whitespaces and trailing spaces
- * @param text String to be
- * @return Trimed text
- *
- */
-char *trim(char *text)
-{
-    int i = 0;
-    int len = strlen(text);
-
-    while (i < len && isspace(text[i]))
-    {
-        i++;
-    }
-
-    int len2 = strlen(text);
-
-    while (len2 > 0 && isspace(text[len2 - 1]))
-    {
-        len2--;
-    }
-
-    text[len2] = '\0';
-
-    return text;
-}
-
 char *bsort(char *text)
 {
     int length = strlen(text);
@@ -194,17 +163,6 @@ char *bsort(char *text)
     }
 
     return text;
-}
-
-/**
- * @brief Replaces diacritics characters with regular ASCII non-diactitics characters
- * @param input Variable to search address
- * @return Evaluated address result
- */
-char *replaceDiacritics(char *input)
-{
-
-    return input;
 }
 
 /**
