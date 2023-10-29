@@ -44,7 +44,7 @@ STUBS_DIR=./tools/stubs
 # Compiler setup
 CC=cc
 CFLAGS=-std=c11 -Wall -Werror -Wextra -g
-ENTRY_FILE=main
+ENTRY_FILE=keyfilter
 SRC_FILES:=$(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/**/*.h) $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*.h)
 INCLUDES:=-I$(SRC_DIR)
 ENTRY_FILES:=$(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/*.c)

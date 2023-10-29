@@ -12,7 +12,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 # Compile the program
-gcc -std=c11 -Wall -Wextra -Werror ./src/main.c -o keyfilter
+gcc -std=c11 -Wall -Wextra -Werror ./src/keyfilter.c -o keyfilter
 
 run_test() {
 	input_file=$1

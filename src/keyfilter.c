@@ -1,8 +1,8 @@
 /**
  ***********************************************************************************
- * @file main.c
+ * @file keyfilter.c
  * @author Matěj Křenek <xkrenem00@stud.fit.vutbr.cz>
- * @brief
+ * @brief Program to emulate the algorithm for virtual navigation keyboard.
  * @date 2023-10-28
  *
  * @copyright Copyright (c) 2023
@@ -16,7 +16,7 @@
 
 #define MAX_INPUT_LENGTH 101
 #define MAX_ADDRESS_LENGTH 101
-#define MAX_HINT_LENGTH 128 // maximum number of chars in 7bit ASCII table
+#define MAX_HINT_LENGTH 128 // Maximum number of chars in 7bit ASCII table
 
 typedef enum
 {
@@ -26,6 +26,7 @@ typedef enum
 } AddressResult;
 
 char *uppercase(char *text);
+char *trim(char *text);
 char *argcat(char *input, char *args[], int argc);
 char *bsort(char *input);
 AddressResult eval_address(char *input, char *address);
@@ -38,13 +39,13 @@ int main(int argc, char *argv[])
     int address_prefix_count = 0;
     char hint[MAX_HINT_LENGTH] = "";
 
-    // Concatante passed arguments and convert the input to lowercase
+    // Concatenate passed arguments and convert the input to uppercase
     uppercase(argcat(input, argv, argc));
 
-    // Check if any addresses have been passed to program
+    // Check if any addresses have been passed to input of program
     if (isatty(STDIN_FILENO))
     {
-        printf("Addresses havent been passed on input.\n");
+        fprintf(stderr, "Addresses haven't been passed to input of program.\n");
         return 1;
     }
 
@@ -53,8 +54,8 @@ int main(int argc, char *argv[])
     {
         char hint_temp[2];
 
-        // Format address row
-        uppercase(address);
+        // Convert address to uppercase and trim trailing spaces
+        trim(uppercase(address));
 
         switch (eval_address(input, address))
         {
@@ -65,14 +66,14 @@ int main(int argc, char *argv[])
             hint_temp[0] = address[strlen(input)];
             hint_temp[1] = '\0';
 
-            // Add letter to hint only of it does not alredy exists in the hint
+            // Add only a hint letter that does not already exist in hint
             if (!strchr(hint, hint_temp[0]))
             {
                 strcat(hint, hint_temp);
             }
 
-            // If first of address prefix add it as found address else set found address to empty
-            if (address_prefix_count <= 0)
+            // If first of address prefix or found address is same as address add it as found address else set found address to empty
+            if (address_prefix_count <= 0 || strcmp(address_found, address) == 0)
             {
                 strcpy(address_found, address);
             }
@@ -107,8 +108,30 @@ int main(int argc, char *argv[])
 }
 
 /**
+ * @brief Trim trailing spaces from the passed input string
+ * @param input String to be trimmed
+ * @return Trimmed string
+ */
+char *trim(char *text)
+{
+    for (int i = strlen(text) - 1; i >= 0; i--)
+    {
+        if (text[i] == '\n')
+        {
+            text[i] = '\0';
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return text;
+}
+
+/**
  * @brief Converts passed string to uppercase
- * @param text String to be converted
+ * @param text String to be converted to uppercase
  * @return Uppercased string
  */
 char *uppercase(char *text)
@@ -123,14 +146,13 @@ char *uppercase(char *text)
 
 /**
  * @brief Concatanate list of arguments
- * @param input Variable where the concated arguments are stored into
+ * @param input String where the concated arguments are stored into
  * @param args List of argumets to be concataned
  * @param argc Count of passed arguments
  * @return Concatenated arguments
  */
 char *argcat(char *input, char *args[], int argc)
 {
-
     for (int i = 1; i < argc; i++)
     {
         if (i > 1)
@@ -144,6 +166,11 @@ char *argcat(char *input, char *args[], int argc)
     return input;
 }
 
+/**
+ * @brief Sort passed text alphabetically using bubble sort
+ * @param text String to be sorted
+ * @return Sorted text
+ */
 char *bsort(char *text)
 {
     int length = strlen(text);
@@ -166,9 +193,8 @@ char *bsort(char *text)
 }
 
 /**
- * @brief Evaluate address result based on passed string and address
- * @param input Variable to search address
- * @param input_length Length of passeed input
+ * @brief Evaluate address result based on passed search input and address
+ * @param input String to search address
  * @param address Address to be evaluated
  * @return Evaluated address result
  */

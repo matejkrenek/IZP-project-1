@@ -59,6 +59,8 @@
   "files.associations": {
     "stdio.h": "c",
     "string.h": "c",
-    "logger.h": "c"
+    "logger.h": "c",
+    "unistd.h": "c",
+    "ctype.h": "c"
   }
 }

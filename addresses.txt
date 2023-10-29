@@ -1,7 +1,8 @@
 Prague
-Praguee
+Prague
 Brno
-Brnoo
+Brno
+Bratislava
 Ostrava
 Plzen
 Liberec
@@ -77,6 +78,8 @@ Olomouc
 Ceske Budejovice
 Usti nad Label
 Hradec Kralove
+Hradec pod Kralove
+Hradec pod Kralove
 Pardubice
 Zlin
 Havirov
